@@ -1,5 +1,8 @@
 package Lambda;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,5 +56,29 @@ class Sample01Test extends Sample01 {
     @Test
     void testLambdaConsumer() {
         myConsumer.accept("Lambda Consumer.");
+    }
+
+    @Test
+    void testLambdaPredicate() {
+        assertTrue(predicate.test("JAVA"));
+        assertTrue(predicate.test("Java"));
+        assertTrue(predicate.test("java"));
+    }
+
+    @Test
+    void testLambdaFunction() {
+        show(function.apply(120));
+    }
+
+    @Test
+    void testLambdaUnaryOperator() {
+        assertEquals((Integer) 4, unaryOperator.apply(2));
+        assertEquals((Integer) 9, unaryOperator.apply(3));
+    }
+
+    @Test
+    void testLambdaBinaryOperator() {
+        assertEquals((Integer) 6, binaryOperator.apply(2, 3));
+        assertEquals((Integer) 12, binaryOperator.apply(3, 4));
     }
 }
