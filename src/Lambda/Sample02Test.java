@@ -1,6 +1,3 @@
-/**
- * 
- */
 package Lambda;
 
 import static org.junit.Assert.assertEquals;
@@ -15,10 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/**
- * @author user01
- *
- */
 class Sample02Test extends Sample02 {
 
     /**
