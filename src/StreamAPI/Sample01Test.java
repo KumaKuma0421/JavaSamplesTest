@@ -20,6 +20,7 @@ class Sample01Test extends Sample01 {
     Integer valueBefore;
     double response;
     IntStream numbers2;
+    IntStream numbers3;
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
@@ -34,12 +35,14 @@ class Sample01Test extends Sample01 {
         this.valueBefore = Integer.MIN_VALUE;
         this.numbersList = Arrays.asList(numbers);
         this.numbers2 = IntStream.rangeClosed(1, Integer.MAX_VALUE);
+        this.numbers3 = IntStream.rangeClosed(1, 1000);
     }
 
     @AfterEach
     void tearDown() throws Exception {
         this.numbersList = null;
         this.numbers2 = null;
+        this.numbers3 = null;
     }
 
     @Test
@@ -59,7 +62,7 @@ class Sample01Test extends Sample01 {
     public void testMap() {
         var response = this.numbersList.stream().map(square);
         response.forEach((i) -> {
-            assertTrue(i > 0);
+            assertTrue(i >= 0);
         });
     }
 
@@ -100,10 +103,10 @@ class Sample01Test extends Sample01 {
     @Test
     public void test4() {
         // 数値の合計を取得する
-        var response = numbers2.filter((i) -> {
-            return i % 3 == 0;
+        var response = numbers3.filter((i) -> {
+            return i % 10 == 0;
         }).sum();
 
-        assertEquals(1683, response);
+        assertEquals(50500, response);
     }
 }
