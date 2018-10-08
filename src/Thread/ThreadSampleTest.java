@@ -1,4 +1,4 @@
-package Execute;
+package Thread;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class Sample01Test extends Sample01 {
+class ThreadSampleTest extends ThreadSample {
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
@@ -25,12 +25,12 @@ class Sample01Test extends Sample01 {
     }
 
     @Test
-    void testProcessSample1() {
-        this.processSample(new String[] { "java", "-version" });
+    public void testThread2() {
+        this.runThread2();
     }
 
     @Test
-    void testProcessSample2() {
-        this.processSample(new String[] { "vmstat", "1", "10" });
+    public void testThread4() {
+        this.runThread4();
     }
 }

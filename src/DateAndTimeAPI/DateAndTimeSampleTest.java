@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class Sample01Test extends Sample01 {
+class DateAndTimeSampleTest extends DateAndTimeSample {
 
     DateTimeFormatter basicFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 

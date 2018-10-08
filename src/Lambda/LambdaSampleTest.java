@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
  * @author user01
  *
  */
-class Sample01Test extends Sample01 {
+class LambdaSampleTest extends LambdaSample {
 
     /**
      * @throws java.lang.Exception

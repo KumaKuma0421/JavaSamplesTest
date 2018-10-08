@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class Sample01Test extends Sample01 {
+class Log4j2SampleTest extends Log4j2Sample {
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {

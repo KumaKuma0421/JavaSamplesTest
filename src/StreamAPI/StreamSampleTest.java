@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class Sample01Test extends Sample01 {
+class StreamSampleTest extends StreamSample {
 
     Integer[] numbers = { -1, 2, 0, -3, 8 };
     List<Integer> numbersList;
