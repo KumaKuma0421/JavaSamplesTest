@@ -14,14 +14,14 @@ public class Sample01 {
 
     public boolean Test01(int number) {
         this.number = number;
-        System.out.println("Test01() this.number=" + this.number);
+        System.out.println("Sample01.Test01() this.number=" + this.number);
 
         return (number % 2) == 0;
     }
 
     public int Test02(int number, String message) {
         this.number = number;
-        System.out.println("Test01() this.number=" + this.number + " message=" + message);
+        System.out.println("Sample01.Test02() this.number=" + this.number + " message=" + message);
 
         return (number % 2);
     }
