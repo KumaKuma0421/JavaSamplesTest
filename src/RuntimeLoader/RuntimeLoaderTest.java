@@ -1,6 +1,10 @@
 package RuntimeLoader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -30,31 +34,44 @@ class RuntimeLoaderTest {
     }
 
     @Test
-    void testAdd() {
+    void testAdd0() {
+        try {
+            myLoader.add("RuntimeLoader.Sample00", "bin/RuntimeLoader/Sample00.class");
+        } catch (FileNotFoundException e) {
+            // OK
+        } catch (Exception e) {
+            fail("見つかるはずがありません。");
+        }
+    }
+
+    @Test
+    void testAdd1() {
         int addCount = 0;
 
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
             addCount++;
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
             addCount++;
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
             addCount++;
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
             addCount++;
         } catch (IllegalArgumentException e) {
             assertEquals("多重登録になりました。", e.getMessage());
             assertEquals(2, addCount);
+        } catch (IOException e) {
+
         }
     }
 
     @Test
     void testGetInstance1() {
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
-            var response = myLoader.getInstance("Sample01.class", null, null);
+            var response = myLoader.getInstance("RuntimeLoader.Sample01", null, null);
             assertEquals("class RuntimeLoader.Sample01", response.instance.getClass().toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,13 +81,13 @@ class RuntimeLoaderTest {
     @Test
     void testGetInstance2() {
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
             Class<?>[] typesConstructor = { int.class };
             Object[] argsConstructor = { 1, };
 
-            var response = myLoader.getInstance("Sample02.class", typesConstructor, argsConstructor);
+            var response = myLoader.getInstance("RuntimeLoader.Sample02", typesConstructor, argsConstructor);
             assertEquals("class RuntimeLoader.Sample02", response.instance.getClass().toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,17 +97,18 @@ class RuntimeLoaderTest {
     @Test
     void testInvoke1() {
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
-            var runtimeResponse = myLoader.getInstance("Sample01.class", null, null);
+            var runtimeResponse = myLoader.getInstance("RuntimeLoader.Sample01", null, null);
             assertEquals("class RuntimeLoader.Sample01", runtimeResponse.instance.getClass().toString());
 
             Class<?>[] typesMethod = { int.class };
 
             for (int i = 0; i < 100; i++) {
                 Object[] argsMethod = { i };
-                var response = myLoader.invoke(runtimeResponse, "Sample01.class", "Test01", typesMethod, argsMethod);
+                var response = myLoader.invoke(runtimeResponse, "RuntimeLoader.Sample01", "Test01", typesMethod,
+                        argsMethod);
                 if ((i % 2) == 0) {
                     assertEquals(true, response);
                 } else {
@@ -106,17 +124,18 @@ class RuntimeLoaderTest {
     @Test
     void testInvoke2() {
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
-            var runtimeResponse = myLoader.getInstance("Sample02.class", null, null);
+            var runtimeResponse = myLoader.getInstance("RuntimeLoader.Sample02", null, null);
             assertEquals("class RuntimeLoader.Sample02", runtimeResponse.instance.getClass().toString());
 
             Class<?>[] typesMethod = { int.class, String.class };
             for (int i = 0; i < 100; i++) {
                 String message = String.format("Call %d", i);
                 Object[] argsMethod = { i, message };
-                var response = myLoader.invoke(runtimeResponse, "Sample02.class", "Test02", typesMethod, argsMethod);
+                var response = myLoader.invoke(runtimeResponse, "RuntimeLoader.Sample02", "Test02", typesMethod,
+                        argsMethod);
                 assertEquals(i + 1, response);
             }
 
@@ -126,12 +145,57 @@ class RuntimeLoaderTest {
     }
 
     @Test
+    void testFindClass0() {
+        Class<?> response1 = null;
+        Class<?> response2 = null;
+        try {
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            response1 = myLoader.findClass("RuntimeLoader.Sample01");
+            response2 = myLoader.findClass("RuntimeLoader.Sample01");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(response1.getTypeName(), "RuntimeLoader.Sample01");
+        assertEquals(response2.getTypeName(), "RuntimeLoader.Sample01");
+        assertEquals(response1, response2);
+    }
+
+    @Test
+    void testFindClass1() {
+        Class<?> response1 = null;
+        Class<?> response2 = null;
+        try {
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
+            response1 = myLoader.findClass("RuntimeLoader.Sample01");
+            response2 = myLoader.findClass("RuntimeLoader.Sample02");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(response1.getTypeName(), "RuntimeLoader.Sample01");
+        assertEquals(response2.getTypeName(), "RuntimeLoader.Sample02");
+    }
+
+    @Test
+    void testFindClass2() {
+        Class<?> response = null;
+        try {
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
+            response = myLoader.findClass("RuntimeLoader.Sample00");
+            fail("見つかるはずがありません。");
+        } catch (Exception e) {
+            assertEquals(null, response);
+        }
+    }
+
+    @Test
     void testInvokeSelf01() {
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
-            var myClass = myLoader.findClass("Sample01.class");
+            var myClass = myLoader.findClass("RuntimeLoader.Sample01");
             var myMethod = myClass.getMethod("Test01", int.class);
             var myConstructor = myClass.getConstructor();
             var instance = myConstructor.newInstance();
@@ -150,10 +214,10 @@ class RuntimeLoaderTest {
     @Test
     void testInvokeSelf02() {
         try {
-            myLoader.add("Sample01.class", "bin/RuntimeLoader/Sample01.class");
-            myLoader.add("Sample02.class", "bin/RuntimeLoader/Sample02.class");
+            myLoader.add("RuntimeLoader.Sample01", "bin/RuntimeLoader/Sample01.class");
+            myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
-            var myClass = myLoader.findClass("Sample02.class");
+            var myClass = myLoader.findClass("RuntimeLoader.Sample02");
             Class<?>[] typesMethod = { int.class, String.class };
             var myMethod = myClass.getMethod("Test02", typesMethod);
             Class<?>[] typesConstructor = { int.class };
