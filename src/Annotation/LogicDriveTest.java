@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import Exception.ApplicationException;
+
 class LogicDriveTest {
     LogicDrive logicDrive;
 
@@ -32,8 +34,18 @@ class LogicDriveTest {
         try {
             var logicDirectory = "/home/user01/workspace1/JavaSamples/bin/Annotation/Logics";
             logicDrive.initialize(logicDirectory);
-        } catch (Exception e) {
-            // TODO:future implement.
+        } catch (ApplicationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testInitializeFailed() {
+        try {
+            var logicDirectory = "/home/bin/Logics";
+            logicDrive.initialize(logicDirectory);
+        } catch (ApplicationException e) {
+            e.printStackTrace();
         }
     }
 
