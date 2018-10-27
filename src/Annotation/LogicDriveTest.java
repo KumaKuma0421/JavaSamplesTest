@@ -39,6 +39,7 @@ class LogicDriveTest {
 
     @Test
     void testCallFunction() {
-
+        // TODO:途中
+        logicDrive.callFunction(1, 1);
     }
 }

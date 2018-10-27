@@ -2,15 +2,11 @@ package Database;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import Database.Bean.SampleTable1Bean;
 
 class SampleTable1Test extends SampleTable1 {
 
@@ -33,8 +29,7 @@ class SampleTable1Test extends SampleTable1 {
     @Test
     void testReadData() {
         try {
-            List<SampleTable1Bean> response = this.readAllTable();
-            // var response = this.readAllTable(); // なぜかエラー
+            var response = this.readAllTable();
             assertTrue(response.size() > 0);
 
             response.stream().forEach((row) -> {
