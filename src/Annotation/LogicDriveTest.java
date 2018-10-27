@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class LogicDriveTest {
+    LogicDrive logicDrive;
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
@@ -18,21 +19,26 @@ class LogicDriveTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        logicDrive = new LogicDrive();
     }
 
     @AfterEach
     void tearDown() throws Exception {
+        logicDrive = null;
     }
 
     @Test
     void testInitialize() {
         try {
-            var target = new LogicDrive();
             var logicDirectory = "/home/user01/workspace1/JavaSamples/bin/Annotation/Logics";
-            target.initialize(logicDirectory);
+            logicDrive.initialize(logicDirectory);
         } catch (Exception e) {
             // TODO:future implement.
         }
     }
 
+    @Test
+    void testCallFunction() {
+
+    }
 }

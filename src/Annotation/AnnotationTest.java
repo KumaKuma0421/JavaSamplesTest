@@ -1,10 +1,6 @@
 package Annotation;
 
-import static org.junit.Assert.assertEquals;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import Annotation.Logics.GetSystemInformation;
+import Annotation.Logics.GetUserInformation;
 import Annotation.Logics.LogicBase;
 
 class AnnotationTest {
@@ -35,20 +32,33 @@ class AnnotationTest {
 
     @Test
     public void testLogicBase() {
-        assertEquals(1, 1);
         try {
-            Class<LogicBase> theClass = LogicBase.class;
-
-            Method[] methods = theClass.getMethods();
-            for (Method method : methods) {
-                System.out.println("Method Name:" + method.getName());
-                for (Annotation annotation : method.getDeclaredAnnotations()) {
-                    System.out.println(" annotation:" + annotation);
+            var theClass = LogicBase.class;
+            for (var classAnnotation : theClass.getAnnotations()) {
+                System.out.println("Class Annotation:" + classAnnotation);
+                if (classAnnotation.annotationType() == RuntimeDescriptor.class) {
+                    var targetAnnotation = (RuntimeDescriptor) classAnnotation;
+                    var value = targetAnnotation.value();
+                    var description = targetAnnotation.description();
+                    System.out.println(" value:" + value + " description:" + description);
                 }
             }
 
-            Object[] params = new String[] { "First", "Second", "Third" };
-            LogicBase instance = theClass.getConstructor().newInstance();
+            for (var method : theClass.getMethods()) {
+                System.out.println(" Method Name:" + method.getName());
+                for (var methodAnnotation : method.getDeclaredAnnotations()) {
+                    System.out.println("  Annotation:" + methodAnnotation);
+                    if (methodAnnotation.annotationType() == InjectionInfo.class) {
+                        var targetAnnotation = (InjectionInfo) methodAnnotation;
+                        var stream = targetAnnotation.function();
+                        var function = targetAnnotation.function();
+                        System.out.println("   stream:" + stream + " function:" + function);
+                    }
+                }
+            }
+
+            var params = new String[] { "First", "Second", "Third" };
+            var instance = theClass.getConstructor().newInstance();
             instance.doAction(params);
 
         } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -60,18 +70,40 @@ class AnnotationTest {
     @Test
     public void testGetSystemInformation() {
         try {
-            Class<? extends LogicBase> theClass = GetSystemInformation.class;
+            var theClass = GetSystemInformation.class;
 
-            Method[] methods = theClass.getMethods();
-            for (Method method : methods) {
+            var methods = theClass.getMethods();
+            for (var method : methods) {
                 System.out.println("Method Name:" + method.getName());
-                for (Annotation annotation : method.getDeclaredAnnotations()) {
+                for (var annotation : method.getDeclaredAnnotations()) {
                     System.out.println(" annotation:" + annotation);
                 }
             }
 
-            Object[] params = new String[] { "First", "Second", "Third" };
-            LogicBase instance = theClass.getConstructor().newInstance();
+            var params = new String[] { "First", "Second", "Third" };
+            var instance = theClass.getConstructor().newInstance();
+            instance.action(params);
+        } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGetUserInformation() {
+        try {
+            var theClass = GetUserInformation.class;
+
+            var methods = theClass.getMethods();
+            for (var method : methods) {
+                System.out.println("Method Name:" + method.getName());
+                for (var annotation : method.getDeclaredAnnotations()) {
+                    System.out.println(" annotation:" + annotation);
+                }
+            }
+
+            var params = new String[] { "First", "Second", "Third" };
+            var instance = theClass.getConstructor().newInstance();
             instance.doAction(params);
         } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
                 | InvocationTargetException | NoSuchMethodException e) {

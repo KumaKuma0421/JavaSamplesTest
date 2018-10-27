@@ -72,7 +72,7 @@ class RuntimeLoaderTest {
             myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
             var response = myLoader.getInstance("RuntimeLoader.Sample01", null, null);
-            assertEquals("class RuntimeLoader.Sample01", response.instance.getClass().toString());
+            assertEquals("class RuntimeLoader.Sample01", response.newInstance.getClass().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -88,7 +88,7 @@ class RuntimeLoaderTest {
             Object[] argsConstructor = { 1, };
 
             var response = myLoader.getInstance("RuntimeLoader.Sample02", typesConstructor, argsConstructor);
-            assertEquals("class RuntimeLoader.Sample02", response.instance.getClass().toString());
+            assertEquals("class RuntimeLoader.Sample02", response.newInstance.getClass().toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,14 +101,13 @@ class RuntimeLoaderTest {
             myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
             var runtimeResponse = myLoader.getInstance("RuntimeLoader.Sample01", null, null);
-            assertEquals("class RuntimeLoader.Sample01", runtimeResponse.instance.getClass().toString());
+            assertEquals("class RuntimeLoader.Sample01", runtimeResponse.newInstance.getClass().toString());
 
             Class<?>[] typesMethod = { int.class };
 
             for (int i = 0; i < 100; i++) {
                 Object[] argsMethod = { i };
-                var response = myLoader.invoke(runtimeResponse, "RuntimeLoader.Sample01", "Test01", typesMethod,
-                        argsMethod);
+                var response = myLoader.invoke(runtimeResponse, "Test01", typesMethod, argsMethod);
                 if ((i % 2) == 0) {
                     assertEquals(true, response);
                 } else {
@@ -128,14 +127,13 @@ class RuntimeLoaderTest {
             myLoader.add("RuntimeLoader.Sample02", "bin/RuntimeLoader/Sample02.class");
 
             var runtimeResponse = myLoader.getInstance("RuntimeLoader.Sample02", null, null);
-            assertEquals("class RuntimeLoader.Sample02", runtimeResponse.instance.getClass().toString());
+            assertEquals("class RuntimeLoader.Sample02", runtimeResponse.newInstance.getClass().toString());
 
             Class<?>[] typesMethod = { int.class, String.class };
             for (int i = 0; i < 100; i++) {
                 String message = String.format("Call %d", i);
                 Object[] argsMethod = { i, message };
-                var response = myLoader.invoke(runtimeResponse, "RuntimeLoader.Sample02", "Test02", typesMethod,
-                        argsMethod);
+                var response = myLoader.invoke(runtimeResponse, "Test02", typesMethod, argsMethod);
                 assertEquals(i + 1, response);
             }
 
@@ -186,6 +184,32 @@ class RuntimeLoaderTest {
             fail("見つかるはずがありません。");
         } catch (Exception e) {
             assertEquals(null, response);
+        }
+    }
+
+    @Test
+    void testFindByAnnotation() {
+        Class<?> response = null;
+        try {
+            myLoader.add("Annotation.Logics.GetSystemInformation",
+                    "/home/user01/workspace1/JavaSamples/bin/Annotation/Logics/GetSystemInformation.class");
+            myLoader.add("Annotation.Logics.GetUserInformation",
+                    "/home/user01/workspace1/JavaSamples/bin/Annotation/Logics/GetUserInformation.class");
+            response = myLoader.findByAnnotation(1, 1);
+            assertEquals(null, response);
+
+            var runtime1 = myLoader.getInstance("Annotation.Logics.GetSystemInformation", null, null);
+            assertEquals("class Annotation.Logics.GetSystemInformation", runtime1.newInstance.getClass().toString());
+            var runtime2 = myLoader.getInstance("Annotation.Logics.GetUserInformation", null, null);
+            assertEquals("class Annotation.Logics.GetUserInformation", runtime2.newInstance.getClass().toString());
+
+            var result = myLoader.findByAnnotation(1, 1);
+            assertEquals("class Annotation.Logics.GetSystemInformation", result.toString());
+
+            var result2 = myLoader.findByAnnotation(1, 2);
+            assertEquals("class Annotation.Logics.GetUserInformation", result2.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
